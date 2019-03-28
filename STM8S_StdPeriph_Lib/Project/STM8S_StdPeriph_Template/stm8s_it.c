@@ -29,16 +29,21 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_it.h"
-#define LED_Port                               GPIOA
-#define LED_Pin                                GPIO_PIN_1
-#define MAX_REPEAT                             5000
+#define LED_Port        GPIOA
+#define LED_Pin         GPIO_PIN_1
+#define MAX_REPEAT      5000
+
+/* Global variables*/
+uint16_t currentCount = 0x3FF5;
+bool gFlag = 0;
+uint8_t beep = 0x00;
+extern uint16_t count, count_halt;
+extern void delay(uint32_t t);
 
 /** @addtogroup Template_Project
   * @{
   */
 
-uint8_t beep=0x00;
-extern uint16_t count, count_halt;
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -87,6 +92,21 @@ INTERRUPT_HANDLER(TLI_IRQHandler, 0)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+  if(!gFlag)
+  {
+    GPIO_WriteHigh(LED_Port, LED_Pin);
+    GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
+    currentCount = TIM1_GetCounter();
+    TIM1_SetCounter(0x3FF5);
+    TIM1_Cmd(DISABLE);
+    gFlag = 1;
+  }
+  else
+  {
+    TIM1_SetCounter(currentCount);
+    TIM1_Cmd(ENABLE);
+    gFlag = 0;
+  }
 }
 
 /**
@@ -247,16 +267,17 @@ INTERRUPT_HANDLER(TIM1_CAP_COM_IRQHandler, 12)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
-  if (TIM1_GetITStatus(TIM1_IT_CC3)!=RESET){
+  if (TIM1_GetITStatus(TIM1_IT_CC3) != RESET)
+  {
     TIM1_ClearITPendingBit(TIM1_IT_CC3);
-    //TIM1_ClearFlag();
+//    TIM1_ClearFlag();
 //    GPIO_WriteReverse(LED_Port, LED_Pin);
     beep = 0x01;
     CLK_PeripheralClockConfig(CLK_PERIPHERAL_TIMER4, ENABLE);
     TIM4_Cmd(ENABLE);
   }
-
-  if (TIM1_GetITStatus(TIM1_IT_CC4)!=RESET){
+  if (TIM1_GetITStatus(TIM1_IT_CC4) != RESET)
+  {
     TIM1_ClearITPendingBit(TIM1_IT_CC4);
 //    GPIO_WriteReverse(LED_Port, LED_Pin);
     beep = 0x01;
@@ -511,46 +532,42 @@ INTERRUPT_HANDLER(TIM6_UPD_OVF_TRG_IRQHandler, 23)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
-        TIM4_ClearITPendingBit(TIM4_IT_UPDATE);
-        if(beep!=0x00)
-        {
-          beep = 0x00;
-//          BEEP_Cmd(ENABLE);
-          GPIO_WriteLow(LED_Port, LED_Pin);
-          GPIO_WriteLow(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
-
-        }else{
-          beep = 0x01;
-//          BEEP_Cmd(DISABLE);
-//          GPIO_WriteHigh(LED_Port, LED_Pin);
-          if (count>20) GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
-        };
-        count++;
-        count_halt++;
-        if (count>MAX_REPEAT)
-          {
-            count = 0;
-            GPIO_WriteHigh(LED_Port, LED_Pin);
-            GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
-            TIM1_SetCounter(0x3FF5);
-//            CLK_PeripheralClockConfig(CLK_PERIPHERAL_TIMER4, DISABLE);
-           }
-
-        if((TIM1_GetCounter())>TIM1_GetCapture3())
-        if((TIM1_GetCounter())<TIM1_GetCapture4())
-        {
-//          BEEP_Cmd(DISABLE);
-          beep = 0x00;
-          GPIO_WriteHigh(LED_Port, LED_Pin);
-          GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
-//          TIM4_Cmd(DISABLE);
-          count=0;
-        };
-
-
-
-
- }
+  TIM4_ClearITPendingBit(TIM4_IT_UPDATE);
+  if(beep != 0x00)
+  {
+    beep = 0x00;
+//    BEEP_Cmd(ENABLE);
+    GPIO_WriteLow(LED_Port, LED_Pin);
+    GPIO_WriteLow(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
+  }
+  else
+  {
+    beep = 0x01;
+//    BEEP_Cmd(DISABLE);
+//    GPIO_WriteHigh(LED_Port, LED_Pin);
+    if (count > 20) GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
+  };
+  count++;
+  count_halt++;
+  if (count > MAX_REPEAT)
+  {
+    count = 0;
+    GPIO_WriteHigh(LED_Port, LED_Pin);
+    GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
+    TIM1_SetCounter(0x3FF5);
+//    CLK_PeripheralClockConfig(CLK_PERIPHERAL_TIMER4, DISABLE);
+  }
+  if((TIM1_GetCounter()) > TIM1_GetCapture3())
+  if((TIM1_GetCounter()) < TIM1_GetCapture4())
+  {
+//    BEEP_Cmd(DISABLE);
+    beep = 0x00;
+    GPIO_WriteHigh(LED_Port, LED_Pin);
+    GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
+//    TIM4_Cmd(DISABLE);
+    count = 0;
+  };
+}
 #endif /* (STM8S903) || (STM8AF622x)*/
 
 /**

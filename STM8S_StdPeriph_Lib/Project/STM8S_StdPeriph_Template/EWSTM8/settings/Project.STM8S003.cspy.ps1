@@ -23,9 +23,9 @@ param([String]$debugfile = "");
 
 if ($debugfile -eq "")
 {
-& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\admin\Documents\STM8S_Encoder_release\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.general.xcl" --backend -f "C:\Users\admin\Documents\STM8S_Encoder_release\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\ASPOD\Desktop\STM\stm8-distancemeter\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.general.xcl" --backend -f "C:\Users\ASPOD\Desktop\STM\stm8-distancemeter\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.driver.xcl" 
 }
 else
 {
-& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\admin\Documents\STM8S_Encoder_release\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\admin\Documents\STM8S_Encoder_release\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\ASPOD\Desktop\STM\stm8-distancemeter\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\ASPOD\Desktop\STM\stm8-distancemeter\STM8S_StdPeriph_Lib\Project\STM8S_StdPeriph_Template\EWSTM8\settings\Project.STM8S003.driver.xcl" 
 }
