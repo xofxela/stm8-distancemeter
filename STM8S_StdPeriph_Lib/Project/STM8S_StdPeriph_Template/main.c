@@ -33,8 +33,7 @@
 #define LED_Pin         GPIO_PIN_1
 #define BTN_PORT        GPIOC
 #define BTN             GPIO_PIN_3
-
-#define TIM4_PERIOD              250
+#define TIM4_PERIOD		250
 
 /* Counter Delta = count_right - count_left */
 /* TIM1 Period = 32767=0x00007FFF */
@@ -123,14 +122,19 @@ void clock_setup(void)
 
 void GPIO_setup(void)
 {
+  //ENCODER
   GPIO_DeInit(GPIOC);
   GPIO_Init(GPIOC, (GPIO_Pin_TypeDef) (GPIO_PIN_6 | GPIO_PIN_7), GPIO_MODE_IN_PU_NO_IT);
+  //EXTI TLI BUTTON
+  GPIO_Init(GPIOC, (GPIO_Pin_TypeDef) (GPIO_PIN_3), GPIO_MODE_IN_PU_IT);
   GPIO_DeInit(GPIOA);
+  //USER LED
   GPIO_Init(LED_Port, LED_Pin, GPIO_MODE_OUT_OD_HIZ_FAST);
   GPIO_DeInit(GPIOD);
-//  //Buzzer OFF
+//  Buzzer OFF
 //  GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_4));
 //  GPIO_Init(GPIOD, GPIO_PIN_4, GPIO_MODE_OUT_PP_HIGH_SLOW);
+  //MOTOR
   GPIO_WriteHigh(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6));
   GPIO_Init(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3| GPIO_PIN_5| GPIO_PIN_6), GPIO_MODE_OUT_OD_HIZ_SLOW);
 
@@ -138,12 +142,9 @@ void GPIO_setup(void)
   GPIO_Init(GPIOA, (GPIO_Pin_TypeDef)(GPIO_PIN_2 | GPIO_PIN_3), GPIO_MODE_OUT_OD_LOW_SLOW);
   GPIO_DeInit(GPIOB);
   GPIO_Init(GPIOB, (GPIO_Pin_TypeDef)(GPIO_PIN_4 | GPIO_PIN_5), GPIO_MODE_OUT_OD_LOW_SLOW);
-  GPIO_Init(GPIOC, (GPIO_Pin_TypeDef)(GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5), GPIO_MODE_OUT_OD_LOW_SLOW);
+  GPIO_Init(GPIOC, (GPIO_Pin_TypeDef)( GPIO_PIN_4 | GPIO_PIN_5), GPIO_MODE_OUT_OD_LOW_SLOW);
   //Buzzer OFF
   GPIO_Init(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_4), GPIO_MODE_OUT_OD_LOW_SLOW);
-  //User Button
-  GPIO_DeInit(BTN_PORT);
-  GPIO_Init(BTN_PORT, BTN, GPIO_MODE_IN_PU_IT);
 }
 
 void TIM1_setup(void)

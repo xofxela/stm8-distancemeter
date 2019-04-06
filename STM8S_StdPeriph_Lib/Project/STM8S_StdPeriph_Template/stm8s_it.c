@@ -567,7 +567,7 @@ INTERRUPT_HANDLER(TIM6_UPD_OVF_TRG_IRQHandler, 23)
 //    TIM4_Cmd(DISABLE);
     count = 0;
   };
-}
+ }
 #endif /* (STM8S903) || (STM8AF622x)*/
 
 /**
